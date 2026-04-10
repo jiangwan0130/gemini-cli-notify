@@ -1,4 +1,4 @@
-module gemini-n
+module github.com/jiangwan0130/gemini-cli-notify
 
 go 1.23.0
 

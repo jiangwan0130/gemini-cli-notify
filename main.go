@@ -74,39 +74,17 @@ func getRepoName() string {
 	return ""
 }
 
-func showToast(repoName string) {
-	titleLine := "Gemini CLI"
-	if repoName != "" {
-		titleLine = fmt.Sprintf("Gemini CLI  [%s]", repoName)
-	}
-	bodyLine := "需要你确认操作，请切回终端"
-
-	script := fmt.Sprintf(`
-[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null
-$template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02)
-$xml = [xml]$template.GetXml()
-$xml.GetElementsByTagName('text')[0].AppendChild($xml.CreateTextNode('%s')) > $null
-$xml.GetElementsByTagName('text')[1].AppendChild($xml.CreateTextNode('%s')) > $null
-$audio = $xml.CreateElement('audio')
-$audio.SetAttribute('src', 'ms-winsoundevent:Notification.Default')
-$xml.toast.AppendChild($audio) > $null
-$ser = New-Object Windows.Data.Xml.Dom.XmlDocument
-$ser.LoadXml($xml.OuterXml)
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Gemini CLI').Show([Windows.UI.Notifications.ToastNotification]::new($ser))
-`, titleLine, bodyLine)
-	cmd := exec.Command("powershell", "-NoProfile", "-Command", script)
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	_ = cmd.Start()
-	// fire-and-forget: don't wait for powershell
-	go func() { _ = cmd.Wait() }()
+// sanitizeForPS escapes single quotes in a string for safe embedding in PowerShell scripts.
+func sanitizeForPS(s string) string {
+	return strings.ReplaceAll(s, "'", "''")
 }
 
-func showCompletionToast(repoName string) {
+func showToastNotification(repoName, body string) {
 	titleLine := "Gemini CLI"
 	if repoName != "" {
-		titleLine = fmt.Sprintf("Gemini CLI  [%s]", repoName)
+		titleLine = fmt.Sprintf("Gemini CLI  [%s]", sanitizeForPS(repoName))
 	}
-	bodyLine := "已完成回复，请切回终端查看"
+	body = sanitizeForPS(body)
 
 	script := fmt.Sprintf(`
 [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null
@@ -120,7 +98,7 @@ $xml.toast.AppendChild($audio) > $null
 $ser = New-Object Windows.Data.Xml.Dom.XmlDocument
 $ser.LoadXml($xml.OuterXml)
 [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Gemini CLI').Show([Windows.UI.Notifications.ToastNotification]::new($ser))
-`, titleLine, bodyLine)
+`, titleLine, body)
 	cmd := exec.Command("powershell", "-NoProfile", "-Command", script)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	_ = cmd.Start()
@@ -208,7 +186,7 @@ func main() {
 				if strings.Contains(title, "✋") {
 					if !confirmNotified {
 						confirmNotified = true
-						go showToast(repoName)
+						go showToastNotification(repoName, "需要你确认操作，请切回终端")
 					}
 				} else {
 					confirmNotified = false
@@ -220,7 +198,7 @@ func main() {
 				} else if strings.Contains(title, "◇") && wasResponding && !completionNotified {
 					completionNotified = true
 					wasResponding = false
-					go showCompletionToast(repoName)
+						go showToastNotification(repoName, "已完成回复，请切回终端查看")
 				}
 				mu.Unlock()
 			}
