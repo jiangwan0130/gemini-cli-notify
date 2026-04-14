@@ -1,7 +1,5 @@
 # gemini-cli-notify
 
-[简体中文](README.md) | [English](README_en.md)
-
 A Windows wrapper for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that sends **Windows Toast notifications** when:
 
 - **Gemini needs your confirmation** (e.g. file edits, command execution) — so you can switch back to the terminal
