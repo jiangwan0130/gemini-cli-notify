@@ -1,7 +1,5 @@
 # gemini-cli-notify
 
-[简体中文](README.md) | [English](README_en.md)
-
 为 [Gemini CLI](https://github.com/google-gemini/gemini-cli) 提供的 Windows 包装工具，在以下情况会发送 **Windows 桌面通知 (Toast Notification)**：
 
 - **Gemini 需要你确认操作**（例如文件编辑、命令执行）—— 以便你及时切回终端。
