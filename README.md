@@ -1,20 +1,36 @@
-# gemini-cli-notify
+# cli-notify
 
-为 [Gemini CLI](https://github.com/google-gemini/gemini-cli) 提供的 Windows 包装工具，在以下情况会发送 **Windows 桌面通知 (Toast Notification)**：
+为 Gemini CLI / Codex CLI 提供的 Windows 包装工具，在以下情况会发送 **Windows 桌面通知 (Toast Notification)**：
 
-- **Gemini 需要你确认操作**（例如文件编辑、命令执行）—— 以便你及时切回终端。
-- **Gemini 完成回复**—— 让你知道输出已经准备就绪。
+- **CLI 需要你确认操作**（例如文件编辑、命令执行）—— 以便你及时切回终端。
+- **CLI 完成回复**—— 让你知道输出已经准备就绪。
 
-当你在 Gemini 工作时切换到其他窗口，这个工具将非常有用。只要它需要你的注意，你就会收到桌面通知。
+当你在 Gemini 或 Codex 工作时切换到其他窗口，这个工具将非常有用。只要它需要你的注意，你就会收到桌面通知。
+
+当前支持：
+
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+- [Codex CLI](https://github.com/openai/codex)
 
 ## 工作原理
 
-`gemini-cli-notify` 会在一个 [ConPTY](https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/) (Windows 伪控制台) 环境中启动 `gemini`，并轮询控制台标题。Gemini CLI 会使用状态图标更新控制台标题：
+`*-cli-notify` 会在一个 [ConPTY](https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/) (Windows 伪控制台) 环境中启动目标 CLI，并轮询控制台标题。不同 CLI 使用不同的标题状态标记。
+
+### Gemini
 
 | 图标 | 含义 | 通知内容 |
 |------|---------|--------------|
 | ✋ | 需要用户确认 | "需要你确认操作，请切回终端" |
 | ✦ / ⏲ → ◇ | 已完成回复 | "已完成回复，请切回终端查看" |
+
+### Codex
+
+Codex 默认的终端标题包含 `activity` 和 `project-name`。本工具会监听：
+
+| 标题标记 | 含义 | 通知内容 |
+|------|---------|--------------|
+| `[ ! ] Action Required` / `[ . ] Action Required` | 需要用户确认 | "需要你确认操作，请切回终端" |
+| Braille activity spinner → 仅项目名标题 | 已完成回复 | "已完成回复，请切回终端查看" |
 
 ![Notification Demo](images/notification.png)
 
@@ -34,13 +50,20 @@ go install github.com/jiangwan0130/gemini-cli-notify@latest
 
 ## 使用方法
 
-将 `gemini-cli-notify` 当作 `gemini` 的平级替代品直接使用即可：
+将对应的 wrapper 当作原 CLI 的平级替代品直接使用即可：
 
 ```bash
 gemini-cli-notify "解释这段代码"
+codex-cli-notify "解释这段代码"
 ```
 
-所有传入的参数都会直接被转发给 `gemini`。
+所有传入的参数都会直接被转发给选中的 CLI。
+
+也可以显式指定工具：
+
+```bash
+gemini-cli-notify --tool codex "解释这段代码"
+```
 
 ### 提示：创建别名 (Alias)
 
@@ -48,18 +71,21 @@ gemini-cli-notify "解释这段代码"
 
 ```powershell
 Set-Alias gemini gemini-cli-notify
+Set-Alias codex codex-cli-notify
 ```
 
 ## 构建 (Build)
 
 ```bash
 go build -o gemini-cli-notify.exe .
+go build -o codex-cli-notify.exe .
 ```
 
 ## 环境要求
 
 - Windows 10 1809+ (支持 ConPTY)
-- 已安装 [Gemini CLI](https://github.com/google-gemini/gemini-cli) 并确保它已加入系统环境变量 `PATH` 中。
+- 使用 Gemini 时：已安装 [Gemini CLI](https://github.com/google-gemini/gemini-cli) 并确保它已加入系统环境变量 `PATH` 中。
+- 使用 Codex 时：已安装 [Codex CLI](https://github.com/openai/codex) 并确保它已加入系统环境变量 `PATH` 中。
 
 ## 开源协议
 
