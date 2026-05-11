@@ -30,7 +30,7 @@ Codex 默认的终端标题包含 `activity` 和 `project-name`。本工具会�
 | 标题标记 | 含义 | 通知内容 |
 |------|---------|--------------|
 | `[ ! ] Action Required` / `[ . ] Action Required` | 需要用户确认 | "需要你确认操作，请切回终端" |
-| Braille activity spinner → 仅项目名标题 | 已完成回复 | "已完成回复，请切回终端查看" |
+| Braille activity spinner 或 `Starting` / `Working` / `Thinking` / `Waiting` → `Ready` 或仅项目名标题 | 已完成回复 | "已完成回复，请切回终端查看" |
 
 ![Notification Demo](images/notification.png)
 
@@ -38,12 +38,13 @@ Codex 默认的终端标题包含 `activity` 和 `project-name`。本工具会�
 
 ### 通过 Release 页面下载
 
-从 [Releases](https://github.com/jiangwan0130/gemini-cli-notify/releases) 页面下载最新的 `.exe` 可执行文件，并将其放入系统环境变量 `PATH` 中。
+从 [Releases](https://github.com/jiangwan0130/gemini-cli-notify/releases) 页面下载需要的 `.exe` 可执行文件，并将其放入系统环境变量 `PATH` 中。
 
 ### 从源码安装
 
 ```bash
-go install github.com/jiangwan0130/gemini-cli-notify@latest
+go install github.com/jiangwan0130/gemini-cli-notify/cmd/gemini-cli-notify@latest
+go install github.com/jiangwan0130/gemini-cli-notify/cmd/codex-cli-notify@latest
 ```
 
 > 需要 Go 1.23+ 并且仅支持 Windows 系统。
@@ -57,13 +58,7 @@ gemini-cli-notify "解释这段代码"
 codex-cli-notify "解释这段代码"
 ```
 
-所有传入的参数都会直接被转发给选中的 CLI。
-
-也可以显式指定工具：
-
-```bash
-gemini-cli-notify --tool codex "解释这段代码"
-```
+所有传入的参数都会直接被转发给对应的 CLI。`gemini-cli-notify` 始终启动 Gemini CLI，`codex-cli-notify` 始终启动 Codex CLI。
 
 ### 提示：创建别名 (Alias)
 
@@ -77,8 +72,8 @@ Set-Alias codex codex-cli-notify
 ## 构建 (Build)
 
 ```bash
-go build -o gemini-cli-notify.exe .
-go build -o codex-cli-notify.exe .
+go build -o gemini-cli-notify.exe ./cmd/gemini-cli-notify
+go build -o codex-cli-notify.exe ./cmd/codex-cli-notify
 ```
 
 ## 环境要求

@@ -39,8 +39,8 @@ internal/
 `codex-cli-notify` 始终启动 `codex`，并使用 Codex 的标题状态匹配规则：
 
 - 标题中出现 action-required 文本时，表示需要用户确认。
-- 标题中出现 spinner 帧，或者 working/thinking/waiting 文本时，表示 CLI 正在回复。
-- 任何非空的项目标题样式文本表示空闲。
+- 标题中出现 spinner 帧，或者 starting/working/thinking/waiting 文本时，表示 CLI 正在回复。
+- 标题中出现 ready 文本，或者任何非空的项目标题样式文本时，表示空闲。
 
 两个可执行文件都会保留现有的参数转发、ConPTY 包装、终端尺寸同步、仓库名展示和 Toast 通知行为。
 

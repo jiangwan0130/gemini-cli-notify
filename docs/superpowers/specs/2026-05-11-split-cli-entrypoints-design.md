@@ -39,8 +39,8 @@ Each command entrypoint will pass a fixed tool configuration into the shared pac
 `codex-cli-notify` will always launch `codex` and use Codex title-state matching:
 
 - Action-required title text means confirmation is needed.
-- Spinner frames or working/thinking/waiting title text means the CLI is responding.
-- Any non-empty project-style title means idle.
+- Spinner frames or starting/working/thinking/waiting title text means the CLI is responding.
+- Ready or any non-empty project-style title means idle.
 
 Both binaries will keep existing argument forwarding, ConPTY wrapping, terminal resize handling, repo-name display, and Toast notification behavior.
 

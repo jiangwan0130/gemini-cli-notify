@@ -30,7 +30,7 @@ Codex's default terminal title includes `activity` and `project-name`. The wrapp
 | Title marker | Meaning | Notification |
 |--------------|---------|--------------|
 | `[ ! ] Action Required` / `[ . ] Action Required` | Needs user confirmation | "需要你确认操作，请切回终端" |
-| Braille activity spinner → project-only title | Finished responding | "已完成回复，请切回终端查看" |
+| Braille activity spinner or `Starting` / `Working` / `Thinking` / `Waiting` → `Ready` or project-only title | Finished responding | "已完成回复，请切回终端查看" |
 
 ![Notification Demo](images/notification.png)
 
@@ -38,12 +38,13 @@ Codex's default terminal title includes `activity` and `project-name`. The wrapp
 
 ### From Release
 
-Download the latest `.exe` from the [Releases](https://github.com/jiangwan0130/gemini-cli-notify/releases) page and place it in your `PATH`.
+Download the `.exe` file you need from the [Releases](https://github.com/jiangwan0130/gemini-cli-notify/releases) page and place it in your `PATH`.
 
 ### From Source
 
 ```bash
-go install github.com/jiangwan0130/gemini-cli-notify@latest
+go install github.com/jiangwan0130/gemini-cli-notify/cmd/gemini-cli-notify@latest
+go install github.com/jiangwan0130/gemini-cli-notify/cmd/codex-cli-notify@latest
 ```
 
 > Requires Go 1.23+ and Windows.
@@ -57,13 +58,7 @@ gemini-cli-notify "explain this code"
 codex-cli-notify "explain this code"
 ```
 
-All arguments are forwarded to the selected CLI directly.
-
-You can also force a tool explicitly:
-
-```bash
-gemini-cli-notify --tool codex "explain this code"
-```
+All arguments are forwarded to the matching CLI directly. `gemini-cli-notify` always launches Gemini CLI, and `codex-cli-notify` always launches Codex CLI.
 
 ### Tip: Create an alias
 
@@ -77,8 +72,8 @@ Set-Alias codex codex-cli-notify
 ## Build
 
 ```bash
-go build -o gemini-cli-notify.exe .
-go build -o codex-cli-notify.exe .
+go build -o gemini-cli-notify.exe ./cmd/gemini-cli-notify
+go build -o codex-cli-notify.exe ./cmd/codex-cli-notify
 ```
 
 ## Requirements

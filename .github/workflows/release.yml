@@ -18,11 +18,16 @@ jobs:
         with:
           go-version: "1.23"
 
-      - name: Build
-        run: go build -ldflags="-s -w" -o gemini-cli-notify.exe .
+      - name: Build Gemini
+        run: go build -ldflags="-s -w" -o gemini-cli-notify.exe ./cmd/gemini-cli-notify
+
+      - name: Build Codex
+        run: go build -ldflags="-s -w" -o codex-cli-notify.exe ./cmd/codex-cli-notify
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: gemini-cli-notify.exe
+          files: |
+            gemini-cli-notify.exe
+            codex-cli-notify.exe
           generate_release_notes: true
